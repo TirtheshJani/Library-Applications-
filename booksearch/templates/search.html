@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Search Books{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2>Search for Books</h2>
+    
+    <div class="search-form">
+        <input type="text" id="searchQuery" placeholder="Enter book title or author...">
+        <select id="searchType">
+            <option value="q">All</option>
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+        </select>
+        <button onclick="searchBooks()">Search</button>
+    </div>
+    
+    <div id="loading" style="display: none;">Searching...</div>
+    <div id="results"></div>
+</div>
+
+<script>
+async function searchBooks() {
+    const query = document.getElementById('searchQuery').value;
+    const searchType = document.getElementById('searchType').value;
+    
+    if (!query) {
+        alert('Please enter a search query');
+        return;
+    }
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').innerHTML = '';
+    
+    try {
+        const response = await fetch('/api/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query, search_type: searchType })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayResults(data.books);
+        } else {
+            alert('Error searching books');
+        }
+    } catch (error) {
+        alert('Network error');
+    } finally {
+        document.getElementById('loading').style.display = 'none';
+    }
+}
+
+function displayResults(books) {
+    const resultsDiv = document.getElementById('results');
+    
+    if (books.length === 0) {
+        resultsDiv.innerHTML = '<p>No books found</p>';
+        return;
+    }
+    
+    let html = '<div class="book-grid">';
+    
+    books.forEach(book => {
+        html += `
+            <div class="book-card">
+                <img src="${book.cover_url || '/static/no-cover.png'}" alt="${book.title}">
+                <h3>${book.title}</h3>
+                <p class="author">by ${book.author_name}</p>
+                <p class="details">
+                    Publisher: ${book.publisher}<br>
+                    First Published: ${book.first_publish_year}<br>
+                    ${book.isbn ? `ISBN: ${book.isbn}<br>` : ''}
+                    Editions: ${book.edition_count}<br>
+                    E-book: ${book.ebook_access}
+                </p>
+                <button onclick="saveBook('${book.key}', '${book.title.replace(/'/g, "\\'")}', '${book.author_name.replace(/'/g, "\\'")}')">
+                    Save Book
+                </button>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+async function saveBook(key, title, author) {
+    // Implementation for saving book
+    try {
+        const response = await fetch('/api/save-book', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                work_key: key,
+                title: title,
+                author_name: author
+                // Add other fields as needed
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            alert('Book saved!');
+        } else {
+            alert(data.error || 'Error saving book');
+        }
+    } catch (error) {
+        alert('Network error');
+    }
+}
+</script>
+{% endblock %}
