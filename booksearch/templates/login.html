@@ -5,6 +5,29 @@
 {% block content %}
 <div class="auth-container">
     <h2>Login</h2>
+    
+    <!-- OAuth Login Buttons -->
+    <div class="oauth-buttons" style="margin-bottom: 2rem;">
+        <h3>Login with Social Account</h3>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <a href="{{ url_for('oauth2_authorize', provider='google') }}" 
+               class="btn" 
+               style="background-color: #db4437; text-decoration: none; display: inline-block;">
+                Login with Google
+            </a>
+            <a href="{{ url_for('oauth2_authorize', provider='github') }}" 
+               class="btn" 
+               style="background-color: #333; text-decoration: none; display: inline-block;">
+                Login with GitHub
+            </a>
+        </div>
+        
+        <div style="text-align: center; margin: 1rem 0; color: #666;">
+            <hr style="margin: 1rem 0;"><span style="background: white; padding: 0 1rem;">OR</span><hr style="margin: 1rem 0;">
+        </div>
+    </div>
+    
+    <!-- Traditional Login Form -->
     <form method="POST">
         <div class="form-group">
             <label for="username">Username</label>
@@ -18,4 +41,30 @@
     </form>
     <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
 </div>
+
+<style>
+.oauth-buttons {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.oauth-buttons h3 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.oauth-buttons .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.oauth-buttons .btn:hover {
+    opacity: 0.9;
+}
+</style>
 {% endblock %}
