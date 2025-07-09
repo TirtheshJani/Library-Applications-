@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}My Saved Books{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2>My Saved Books</h2>
+    
+    {% if books %}
+        <div class="book-grid">
+            {% for book in books %}
+            <div class="book-card">
+                {% if book.cover_id %}
+                    <img src="https://covers.openlibrary.org/b/id/{{ book.cover_id }}-M.jpg" alt="{{ book.title }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='no-cover.png') }}" alt="{{ book.title }}">
+                {% endif %}
+                <h3>{{ book.title }}</h3>
+                <p class="author">by {{ book.author_name }}</p>
+                <p class="details">
+                    Publisher: {{ book.publisher }}<br>
+                    Publication Date: {{ book.publication_date }}<br>
+                    {% if book.isbn %}ISBN: {{ book.isbn }}<br>{% endif %}
+                    Editions: {{ book.edition_count }}<br>
+                    E-book: {{ book.ebook_access }}<br>
+                    Saved: {{ book.saved_at.strftime('%Y-%m-%d') }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't saved any books yet. <a href="{{ url_for('search') }}">Start searching!</a></p>
+    {% endif %}
+</div>
+{% endblock %}

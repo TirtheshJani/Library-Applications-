@@ -35,9 +35,8 @@
         {% block content %}
             <div class="welcome">
                 <h2>Welcome to Book Search</h2>
-                <p>Search millions of books using the OpenLibrary API</p>
                 {% if not current_user.is_authenticated %}
-                    <a href="{{ url_for('register') }}" class="btn">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn">Get Started</a>
                 {% endif %}
             </div>
         {% endblock %}

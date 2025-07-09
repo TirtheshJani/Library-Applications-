@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProSports Talent - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            background: linear-gradient(45deg, #3498db, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3498db, #e74c3c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Search Bar */
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .search-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-tab.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nba { color: #1e3a8a; }
+        .nfl { color: #dc2626; }
+        .mlb { color: #059669; }
+        .nhl { color: #7c3aed; }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .athletes-section, .rankings-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        /* Athlete Cards */
+        .athlete-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .athlete-card {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .athlete-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .athlete-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3498db, #e74c3c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .athlete-info {
+            flex: 1;
+        }
+
+        .athlete-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .athlete-details {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .athlete-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label-small {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        /* Rankings */
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .ranking-item:hover {
+            background: #e9ecef;
+        }
+
+        .rank-number {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .ranking-info {
+            flex: 1;
+        }
+
+        .ranking-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .ranking-score {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .quick-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">🏆 ProSports Talent</div>
+            <div class="user-info">
+                <span>Welcome, Admin</span>
+                <div class="user-avatar">A</div>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search athletes by name, position, team, or stats...">
+                <button class="search-btn">🔍 Search</button>
+            </div>
+            <div class="filter-tabs">
+                <div class="filter-tab active">All Sports</div>
+                <div class="filter-tab">NBA</div>
+                <div class="filter-tab">NFL</div>
+                <div class="filter-tab">MLB</div>
+                <div class="filter-tab">NHL</div>
+                <div class="filter-tab">Top Performers</div>
+                <div class="filter-tab">Available</div>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number nba">847</div>
+                <div class="stat-label">Total Athletes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number nfl">156</div>
+                <div class="stat-label">Active Contracts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number mlb">23</div>
+                <div class="stat-label">New This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number nhl">98.7%</div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Athletes Section -->
+            <section class="athletes-section">
+                <h2 class="section-title">Featured Athletes</h2>
+                <div class="athlete-grid">
+                    <div class="athlete-card">
+                        <div class="athlete-photo">LJ</div>
+                        <div class="athlete-info">
+                            <div class="athlete-name">LeBron James</div>
+                            <div class="athlete-details">SF • Los Angeles Lakers • NBA</div>
+                            <div class="athlete-stats">
+                                <div class="stat">
+                                    <div class="stat-value">25.7</div>
+                                    <div class="stat-label-small">PPG</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">7.3</div>
+                                    <div class="stat-label-small">RPG</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">7.3</div>
+                                    <div class="stat-label-small">APG</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="athlete-card">
+                        <div class="athlete-photo">TB</div>
+                        <div class="athlete-info">
+                            <div class="athlete-name">Tom Brady</div>
+                            <div class="athlete-details">QB • Tampa Bay Buccaneers • NFL</div>
+                            <div class="athlete-stats">
+                                <div class="stat">
+                                    <div class="stat-value">4,694</div>
+                                    <div class="stat-label-small">Yards</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">25</div>
+                                    <div class="stat-label-small">TDs</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">90.7</div>
+                                    <div class="stat-label-small">Rating</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="athlete-card">
+                        <div class="athlete-photo">MM</div>
+                        <div class="athlete-info">
+                            <div class="athlete-name">Mike Trout</div>
+                            <div class="athlete-details">CF • Los Angeles Angels • MLB</div>
+                            <div class="athlete-stats">
+                                <div class="stat">
+                                    <div class="stat-value">.283</div>
+                                    <div class="stat-label-small">AVG</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">40</div>
+                                    <div class="stat-label-small">HR</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">104</div>
+                                    <div class="stat-label-small">RBI</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="athlete-card">
+                        <div class="athlete-photo">CM</div>
+                        <div class="athlete-info">
+                            <div class="athlete-name">Connor McDavid</div>
+                            <div class="athlete-details">C • Edmonton Oilers • NHL</div>
+                            <div class="athlete-stats">
+                                <div class="stat">
+                                    <div class="stat-value">64</div>
+                                    <div class="stat-label-small">Goals</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">89</div>
+                                    <div class="stat-label-small">Assists</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">153</div>
+                                    <div class="stat-label-small">Points</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="action-btn btn-primary">➕ Add New Athlete</button>
+                    <button class="action-btn btn-secondary">📊 View Analytics</button>
+                    <button class="action-btn btn-success">📁 Upload Media</button>
+                </div>
+            </section>
+
+            <!-- Rankings Section -->
+            <section class="rankings-section">
+                <h2 class="section-title">Top Rankings</h2>
+                <div class="ranking-item">
+                    <div class="rank-number">1</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">LeBron James</div>
+                        <div class="ranking-score">Overall Score: 98.5</div>
+                    </div>
+                </div>
+                <div class="ranking-item">
+                    <div class="rank-number">2</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Connor McDavid</div>
+                        <div class="ranking-score">Overall Score: 97.8</div>
+                    </div>
+                </div>
+                <div class="ranking-item">
+                    <div class="rank-number">3</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Mike Trout</div>
+                        <div class="ranking-score">Overall Score: 96.2</div>
+                    </div>
+                </div>
+                <div class="ranking-item">
+                    <div class="rank-number">4</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Aaron Donald</div>
+                        <div class="ranking-score">Overall Score: 95.7</div>
+                    </div>
+                </div>
+                <div class="ranking-item">
+                    <div class="rank-number">5</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Stephen Curry</div>
+                        <div class="ranking-score">Overall Score: 94.9</div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="action-btn btn-primary">📈 View Full Rankings</button>
+                    <button class="action-btn btn-secondary">⚙️ Customize Metrics</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter tabs functionality
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Athlete card click animation
+            const athleteCards = document.querySelectorAll('.athlete-card');
+            athleteCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Search functionality simulation
+            const searchBtn = document.querySelector('.search-btn');
+            const searchInput = document.querySelector('.search-input');
+            
+            searchBtn.addEventListener('click', function() {
+                if (searchInput.value.trim()) {
+                    this.textContent = '🔄 Searching...';
+                    setTimeout(() => {
+                        this.textContent = '🔍 Search';
+                        alert('Search feature would filter athletes based on: ' + searchInput.value);
+                    }, 1000);
+                }
+            });
+
+            // Action button animations
+            const actionBtns = document.querySelectorAll('.action-btn');
+            actionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const originalText = this.textContent;
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

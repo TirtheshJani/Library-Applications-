@@ -6,8 +6,8 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     
-    # PostgreSQL Database Configuration
-    DB_USER = os.environ.get('DB_USER', 'postgres')
+     # Google Cloud PostgreSQL Database Configuration
+    DB_USER = os.environ.get('DB_USER', 'booknerd')
     DB_PASSWORD = os.environ.get('DB_PASSWORD')
     DB_HOST = os.environ.get('DB_HOST', '34.130.181.235')
     DB_PORT = os.environ.get('DB_PORT', '5432')
